@@ -1,10 +1,38 @@
 import numpy as np
+import pandas as pd
 import scipy.linalg as linalg
+import matplotlib.pyplot as plt
 
 
 
 def question4():
-	pass
+	degrees = [1, 2, 3]#[1, 2, 3]
+	data = pd.read_csv('./data.csv', header=None, names=['x', 'y'])
+
+	plt.scatter(list(data.x), list(data.y))
+
+	#Expand x into the polynomial data matrix.
+	for d in degrees:
+		A = np.ones((len(data.x), d + 1))
+		for rowInd in range(0, len(data.x)):
+			for col in range(1, len(A[0])):
+				A[rowInd, col] = data.iloc[rowInd]['x']**col
+
+		#Find coeffecients.
+		coeff = linalg.solve(np.dot(A.T,A), np.dot(A.T, (data.y.values).reshape((len(data.y), 1))))
+		regressionFunctOutput = []
+		for i in np.linspace(min(list(data.x)), max(list(data.x))):
+			dataVect = np.ones((1, d+1))
+			for col in range(1, len(A[0])):
+				dataVect[0, col] = i**col
+			regressionFunctOutput.append((i, (np.dot(dataVect, coeff)[0, 0])))
+		plt.plot(list(map(lambda item: item[0], regressionFunctOutput)), list(map(lambda item: item[1], regressionFunctOutput)))
+		print(regressionFunctOutput)
+	plt.show()
+	#print(x)
+
+
+
 
 def question5():
 	A = np.array([[25, 0, 1],
@@ -24,37 +52,10 @@ def question5():
 	print('Part b ans: ')
 	print((1/9.0)*((-4*np.array([A[:, 2]]).T) + (-4*np.array([A[:, 0]]).T) + b))
 
-	print('Part c ans: ')
-	A2 = np.array([[25, 15, 10, 0, 1],
-	               [20, 12, 8, 1, 2],
-	               [40, 30, 10, 1, 6],
-	               [30, 15, 15, 0, 3],
-	               [35, 20, 15, 2, 4]])
-	A3 = np.array([[25, 15, 10, 0, 1],
-	               [20, 12, 8, 1, 2],
-	               [40, 30, 10, 1, 6],
-	               [30, 15, 15, 0, 3],
-	               [35, 20, 15, 2, 4]])
-	b2 = np.array([[104],
-	               [97],
-	               [193],
-	               [132],
-	               [174]])
-	try:
-		print(linalg.solve(A2, b2))
-	except:
-		print('Singular matrix!')
-
-	print('Part c true calories per gram: ')
-	for rowInd in range(0, A2.shape[0]):
-		if np.dot(A2[rowInd, 0:3], b2[0:3]) == trueX[rowInd]:
-			print('Matching Row: ')
-			print(A2[rowInd, :])
-
 
 if __name__ == '__main__':
 	question4()
-	question5()
+	#question5()
 
 
 
