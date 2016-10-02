@@ -2,11 +2,13 @@ import numpy as np
 import pandas as pd
 import scipy.linalg as linalg
 import matplotlib.pyplot as plt
-
-
+import matplotlib.patches as mpatches
 
 def question4():
 	degrees = [1, 2, 3]#[1, 2, 3]
+	plotColors = ['blue', 'green', 'red']
+	plotHandles = []
+
 	data = pd.read_csv('./data.csv', header=None, names=['x', 'y'])
 
 	plt.scatter(list(data.x), list(data.y))
@@ -26,13 +28,14 @@ def question4():
 			for col in range(1, len(A[0])):
 				dataVect[0, col] = i**col
 			regressionFunctOutput.append((i, (np.dot(dataVect, coeff)[0, 0])))
-		plt.plot(list(map(lambda item: item[0], regressionFunctOutput)), list(map(lambda item: item[1], regressionFunctOutput)))
+		plt.plot(list(map(lambda item: item[0], regressionFunctOutput)), list(map(lambda item: item[1], regressionFunctOutput)), color=plotColors[d-1])
+		plotHandles.append(mpatches.Patch(color=plotColors[d-1], label='Degree ' + str(d)))
 		print(regressionFunctOutput)
+	plt.title('Polynomial Regression Curves')
+	plt.xlabel('X data')
+	plt.ylabel('Y data')
+	plt.legend(handles=plotHandles, loc=2)
 	plt.show()
-	#print(x)
-
-
-
 
 def question5():
 	A = np.array([[25, 0, 1],
@@ -55,7 +58,7 @@ def question5():
 
 if __name__ == '__main__':
 	question4()
-	#question5()
+	question5()
 
 
 
